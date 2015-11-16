@@ -1,0 +1,3 @@
+div[class^='foo'],div[class*=' foo'],div[class^='bar']:not([class^='qux'],[class*=' qux']),div[class*=' bar']:not([class^='qux'],[class*=' qux']) {
+	background-color: blue;
+}
