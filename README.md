@@ -20,7 +20,7 @@ div:not([data-thing^~"starts-with"]) {
 /* after */
 
 div[class^="starts-with"],div[class*=" starts-with"] {
-	background-color: blue;
+	background-color: red;
 }
 
 div:not([class^="starts-with"],[class*=" starts-with"]) {
@@ -28,7 +28,7 @@ div:not([class^="starts-with"],[class*=" starts-with"]) {
 }
 ```
 
-Note: The above example generates a [W3C CSS level 4](https://drafts.csswg.org/selectors-4/#negation) `:not()` selector. I recommend using [Selector Not](https://github.com/postcss/postcss-selector-not) to transpile this selector to CSS level 3.
+Note: The above example generates a [W3C CSS level 4](https://drafts.csswg.org/selectors-4/#negation) `:not()` selector. I recommend using [Selector Not](https://github.com/postcss/postcss-selector-not) to transpile this to a more compatible CSS level 3 selector.
 
 ## Usage
 
