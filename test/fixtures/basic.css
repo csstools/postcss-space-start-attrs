@@ -1,3 +1,0 @@
-div[class^~'foo'],div[class^~'bar']:not([class^~'qux']) {
-	background-color: blue;
-}

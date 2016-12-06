@@ -1,38 +1,42 @@
-var parser  = require('postcss-selector-parser');
-var postcss = require('postcss');
-var attrRE  = /(.+?)\^~(['"])(.*?)\2/;
+// tooling
+const parser  = require('postcss-selector-parser');
+const postcss = require('postcss');
 
-module.exports = postcss.plugin('postcss-space-start-attrs', function () {
-	return function (css) {
-		css.walkRules(function (rule) {
-			rule.selector = parser(function (selectors) {
-				walk(selectors, function (node) {
-					var m;
+// selector matcher
+const selectorMatch = /(.+?)~\^(['"])(.*?)\2/;
 
-					if (m = node.type === 'attribute' && node.attribute.match(attrRE)) {
-						node.attribute = m[1];
+// plugin
+module.exports = postcss.plugin('postcss-space-start-attrs', () => (css) => {
+	css.walkRules(selectorMatch, (rule) => {
+		rule.selector = parser((selectors) => {
+			walk(selectors, (node) => {
+				if (node.type === 'attribute' && selectorMatch.test(node.attribute)) {
+					const m = node.attribute.match(selectorMatch);
 
-						node.operator  = '*=';
-						node.value     = m[2] + ' ' + m[3] + m[2];
+					node.attribute = m[1];
 
-						node.parent.parent.insertAfter(node.parent, node.parent.clone());
+					node.operator  = '*=';
+					node.value     = m[2] + ' ' + m[3] + m[2];
 
-						node.operator  = '^=';
-						node.value     = m[2] + m[3] + m[2];
-					}
-				});
-			}).process(rule.selector).result;
-		});
-	};
+					node.parent.parent.insertAfter(node.parent, node.parent.clone());
+
+					node.operator  = '^=';
+					node.value     = m[2] + m[3] + m[2];
+				}
+			});
+		}).process(rule.selector).result;
+	});
 });
 
-function walk(parent, callback) {
-	var index = -1;
-	var child;
+const walk = (parent, fn) => {
+	let index = -1;
+	let child;
 
 	while (child = parent.nodes[++index]) {
-		callback(child, index);
+		fn(child, index);
 
-		if (child.nodes) walk(child, callback);
+		if (child.nodes) {
+			walk(child, fn);
+		}
 	}
-}
+};
